@@ -64,14 +64,14 @@ function processUploads(mime:Entity[] bodyParts) returns boolean {
         if (partName == "text") {
             var textContent = part.getText();
             if (textContent is string && 'string:trim(textContent) != "") {
-                io:println("📝 Text received: " + textContent);
+                io:println(`📝 Text received: ${textContent}`);
                 uploads.push(textContent);
                 hasNewContent = true;
             }
         } else if (partName == "file") {
             string fileName = contentDisposition.fileName is string ? contentDisposition.fileName : "";
             if (fileName != "") {
-                io:println("📁 File received: " + fileName);
+                io:println(`📁 File received: ${fileName}`);
                 FileUpload fileUpload = {fileName: fileName};
                 uploads.push(fileUpload);
                 hasNewContent = true;
@@ -86,20 +86,15 @@ function generateUploadsHtml(boolean hasNewContent) returns string {
     string resultHtml = "";
 
     if (!hasNewContent && uploads.length() == 0) {
-        resultHtml = "<div class='bg-yellow-500/20 rounded-lg p-4 border border-yellow-500/30'>";
-        resultHtml += "<p class='text-white'>⚠️ No content provided. Please enter text or select a file.</p>";
-        resultHtml += "</div>";
+        resultHtml = string `<div class='bg-yellow-500/20 rounded-lg p-4 border border-yellow-500/30'><p class='text-white'>⚠️ No content provided. Please enter text or select a file.</p></div>`;
         return resultHtml;
     }
 
     if (hasNewContent) {
-        resultHtml += "<div class='bg-green-500/20 rounded-lg p-2 border border-green-500/30 mb-4'>";
-        resultHtml += "<p class='text-green-200 text-sm'>🎉 Upload successful!</p>";
-        resultHtml += "</div>";
+        resultHtml += string `<div class='bg-green-500/20 rounded-lg p-2 border border-green-500/30 mb-4'><p class='text-green-200 text-sm'>🎉 Upload successful!</p></div>`;
     }
 
-    resultHtml += "<div class='bg-blue-500/20 rounded-lg p-4 border border-blue-500/30'>";
-    resultHtml += "<h3 class='text-white font-semibold mb-4'>📋 All Uploads (" + uploads.length().toString() + "):</h3>";
+    resultHtml += string `<div class='bg-blue-500/20 rounded-lg p-4 border border-blue-500/30'><h3 class='text-white font-semibold mb-4'>📋 All Uploads (${uploads.length().toString()}):</h3>`;
 
     foreach Upload upload in uploads {
         resultHtml += toHTML(upload);
@@ -116,12 +111,12 @@ function toHTML(Upload upload) returns string {
         itemHtml += "<div class='flex items-center mb-1'>";
         itemHtml += "<span class='text-blue-300 font-medium'>📝 Text:</span>";
         itemHtml += "</div>";
-        itemHtml += "<p class='text-white/90 ml-4'>" + upload + "</p>";
+        itemHtml += string `<p class='text-white/90 ml-4'>${upload}</p>`;
     } else if (upload is FileUpload) {
         itemHtml += "<div class='flex items-center mb-1'>";
         itemHtml += "<span class='text-green-300 font-medium'>📄 File:</span>";
         itemHtml += "</div>";
-        itemHtml += "<p class='text-white/90 ml-4'>" + upload.fileName + "</p>";
+        itemHtml += string `<p class='text-white/90 ml-4'>${upload.fileName}</p>`;
     }
 
     itemHtml += "</div>";
