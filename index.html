@@ -18,7 +18,35 @@
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
+        .clipboard-text {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .clipboard-text:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
     </style>
+    <script>
+        function copyToClipboard(text, element) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show success feedback
+                const originalText = element.innerHTML;
+                element.innerHTML = '✅ Copied!';
+                element.style.color = '#10b981';
+                
+                setTimeout(() => {
+                    element.innerHTML = originalText;
+                    element.style.color = '';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy text: ', err);
+                alert('Failed to copy text to clipboard');
+            });
+        }
+    </script>
 </head>
 
 <body class="flex items-center justify-center min-h-screen p-4">

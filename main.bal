@@ -148,8 +148,9 @@ function toHTML(Upload upload) returns string {
     if (upload is TextUpload) {
         itemHtml += "<div class='flex items-center mb-1'>";
         itemHtml += "<span class='text-blue-300 font-medium'>📝 Text:</span>";
+        itemHtml += "<span class='text-xs text-white/60 ml-2'>(click to copy)</span>";
         itemHtml += "</div>";
-        itemHtml += string `<p class='text-white/90 ml-4'>${upload}</p>`;
+        itemHtml += string `<p class='text-white/90 ml-4 clipboard-text cursor-pointer hover:bg-white/10 p-2 rounded' onclick="copyToClipboard('${upload}', this)" title="Click to copy to clipboard">${upload}</p>`;
     } else if (upload is FileUpload) {
         itemHtml += "<div class='flex items-center mb-1'>";
         itemHtml += "<span class='text-green-300 font-medium'>📄 File:</span>";
