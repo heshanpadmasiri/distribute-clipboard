@@ -31,7 +31,8 @@
         </div>
 
         <div class="bg-white/20 rounded-xl p-6 mb-6">
-            <form id="uploadForm" hx-post="/api/upload" hx-target="#result" hx-swap="innerHTML" enctype="multipart/form-data">
+            <form id="uploadForm" hx-post="/api/upload" hx-target="#result" hx-swap="innerHTML" enctype="multipart/form-data"
+                hx-on::after-request="if(event.detail.successful) { this.reset(); }">
                 <div class="flex gap-4 mb-6">
                     <div class="flex-1">
                         <label for="textInput" class="block text-white/80 mb-2">Enter Text:</label>

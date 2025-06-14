@@ -2,6 +2,18 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/lang.'string;
 
+// Type definitions
+type TextUpload string;
+
+type FileUpload record {
+    string fileName;
+};
+
+type Upload TextUpload|FileUpload;
+
+// Global array to store all uploads
+Upload[] uploads = [];
+
 service / on new http:Listener(8080) {
 
     // Serve the main HTML page
@@ -38,8 +50,7 @@ service / on new http:Listener(8080) {
             return response;
         }
 
-        string resultHtml = "<div class='bg-green-500/20 rounded-lg p-4 border border-green-500/30'>";
-        boolean hasContent = false;
+        boolean hasNewContent = false;
 
         foreach var part in bodyParts {
             var contentDisposition = part.getContentDisposition();
@@ -50,32 +61,64 @@ service / on new http:Listener(8080) {
                 var textContent = part.getText();
                 if (textContent is string && 'string:trim(textContent) != "") {
                     io:println("📝 Text received: " + textContent);
-                    resultHtml += "<h3 class='text-white font-semibold mb-2'>✅ Text uploaded:</h3>";
-                    resultHtml += "<p class='text-white/90 bg-white/10 rounded p-2 mb-3'>" + textContent + "</p>";
-                    hasContent = true;
+                    // Add text to uploads array
+                    uploads.push(textContent);
+                    hasNewContent = true;
                 }
             } else if (partName == "file") {
                 // Handle file upload
                 string fileName = contentDisposition.fileName is string ? contentDisposition.fileName : "";
                 if (fileName != "") {
                     io:println("📁 File received: " + fileName);
-                    resultHtml += "<h3 class='text-white font-semibold mb-2'>✅ File uploaded:</h3>";
-                    resultHtml += "<p class='text-white/90 bg-white/10 rounded p-2 mb-3'>📄 " + fileName + "</p>";
-                    hasContent = true;
+                    // Add file to uploads array
+                    FileUpload fileUpload = {fileName: fileName};
+                    uploads.push(fileUpload);
+                    hasNewContent = true;
                 }
             }
         }
 
-        if (!hasContent) {
+        // Generate HTML response showing all uploads
+        string resultHtml = "";
+
+        if (!hasNewContent && uploads.length() == 0) {
             resultHtml = "<div class='bg-yellow-500/20 rounded-lg p-4 border border-yellow-500/30'>";
             resultHtml += "<p class='text-white'>⚠️ No content provided. Please enter text or select a file.</p>";
+            resultHtml += "</div>";
         } else {
-            resultHtml += "<p class='text-green-200 text-sm'>🎉 Upload successful!</p>";
+            if (hasNewContent) {
+                resultHtml += "<div class='bg-green-500/20 rounded-lg p-2 border border-green-500/30 mb-4'>";
+                resultHtml += "<p class='text-green-200 text-sm'>🎉 Upload successful!</p>";
+                resultHtml += "</div>";
+            }
+
+            resultHtml += "<div class='bg-blue-500/20 rounded-lg p-4 border border-blue-500/30'>";
+            resultHtml += "<h3 class='text-white font-semibold mb-4'>📋 All Uploads (" + uploads.length().toString() + "):</h3>";
+
+            // Display all uploads
+            foreach int i in 0 ..< uploads.length() {
+                Upload upload = uploads[i];
+                resultHtml += "<div class='bg-white/10 rounded p-3 mb-2'>";
+
+                if (upload is TextUpload) {
+                    resultHtml += "<div class='flex items-center mb-1'>";
+                    resultHtml += "<span class='text-blue-300 font-medium'>📝 Text #" + (i + 1).toString() + ":</span>";
+                    resultHtml += "</div>";
+                    resultHtml += "<p class='text-white/90 ml-4'>" + upload + "</p>";
+                } else if (upload is FileUpload) {
+                    resultHtml += "<div class='flex items-center mb-1'>";
+                    resultHtml += "<span class='text-green-300 font-medium'>📄 File #" + (i + 1).toString() + ":</span>";
+                    resultHtml += "</div>";
+                    resultHtml += "<p class='text-white/90 ml-4'>" + upload.fileName + "</p>";
+                }
+
+                resultHtml += "</div>";
+            }
+
+            resultHtml += "</div>";
         }
 
-        resultHtml += "</div>";
         response.setTextPayload(resultHtml, "text/html");
-
         return response;
     }
 }
