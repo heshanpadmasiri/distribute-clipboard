@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ballerina HTMX Hello World</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="card rounded-2xl shadow-2xl p-8 max-w-2xl w-full">
+        <div class="text-center mb-8">
+            <h1 class="text-white text-3xl font-bold mb-2">🚀 Ballerina + HTMX</h1>
+            <p class="text-white/80">A simple hello world demonstration</p>
+        </div>
+
+        <div class="bg-white/20 rounded-xl p-6 mb-6">
+            <div id="content" class="text-center">
+                <p class="text-white/80 text-lg">Click the button below to load content!</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button hx-get="/api/hello" hx-target="#content" hx-swap="innerHTML"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
+                Say Hello! 👋
+            </button>
+
+            <button hx-post="/api/update" hx-target="#content" hx-swap="innerHTML"
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
+                Update Message! ✨
+            </button>
+        </div>
+
+        <div class="mt-8 text-center">
+            <p class="text-white/60 text-sm">
+                Powered by <span class="font-semibold">Ballerina</span> & <span class="font-semibold">HTMX</span>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>
