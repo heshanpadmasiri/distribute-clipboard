@@ -1,0 +1,6 @@
+{
+    "[ballerina]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "file"
+    }
+}
