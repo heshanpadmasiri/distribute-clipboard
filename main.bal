@@ -143,19 +143,23 @@ function generateUploadsHtml(boolean hasNewContent) returns string {
 }
 
 function toHTML(Upload upload) returns string {
-    string itemHtml = "<div class='bg-white/10 rounded p-3 mb-2'>";
+    string itemHtml = "<div class='bg-white/10 rounded p-3 mb-2 flex items-center'>";
 
     if (upload is TextUpload) {
+        itemHtml += "<div class='flex flex-col flex-1'>";
         itemHtml += "<div class='flex items-center mb-1'>";
         itemHtml += "<span class='text-blue-300 font-medium'>📝 Text:</span>";
         itemHtml += "<span class='text-xs text-white/60 ml-2'>(click to copy)</span>";
         itemHtml += "</div>";
-        itemHtml += string `<p class='text-white/90 ml-4 clipboard-text cursor-pointer hover:bg-white/10 p-2 rounded' onclick="copyToClipboard('${upload}', this)" title="Click to copy to clipboard">${upload}</p>`;
+        itemHtml += string `<p class='text-white/90 ml-4 clipboard-text cursor-pointer hover:bg-white/10 p-2 rounded flex items-center' onclick="copyToClipboard('${upload}', this)" title="Click to copy to clipboard">${upload}</p>`;
+        itemHtml += "</div>";
     } else if (upload is FileUpload) {
+        itemHtml += "<div class='flex flex-col flex-1'>";
         itemHtml += "<div class='flex items-center mb-1'>";
         itemHtml += "<span class='text-green-300 font-medium'>📄 File:</span>";
         itemHtml += "</div>";
-        itemHtml += string `<p class='text-white/90 ml-4'><a href='/api/download/${upload.fileName}' class='text-blue-400 hover:text-blue-300 underline cursor-pointer' download='${upload.fileName}'>${upload.fileName}</a></p>`;
+        itemHtml += string `<p class='text-white/90 ml-4 flex items-center'><a href='/api/download/${upload.fileName}' class='text-blue-400 hover:text-blue-300 underline cursor-pointer flex items-center' download='${upload.fileName}'>${upload.fileName}</a></p>`;
+        itemHtml += "</div>";
     }
 
     itemHtml += "</div>";
