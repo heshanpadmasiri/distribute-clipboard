@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ballerina HTMX Hello World</title>
+    <title>Distribute Clipboard</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -24,32 +24,35 @@
 <body class="flex items-center justify-center min-h-screen p-4">
     <div class="card rounded-2xl shadow-2xl p-8 max-w-2xl w-full">
         <div class="text-center mb-8">
-            <h1 class="text-white text-3xl font-bold mb-2">🚀 Ballerina + HTMX</h1>
-            <p class="text-white/80">A simple hello world demonstration</p>
+            <h1 class="text-white text-3xl font-bold mb-2">
+                🚀 Distribute Clipboard
+            </h1>
+            <p class="text-white/80">Upload text or files and share instantly</p>
         </div>
 
         <div class="bg-white/20 rounded-xl p-6 mb-6">
-            <div id="content" class="text-center">
-                <p class="text-white/80 text-lg">Click the button below to load content!</p>
-            </div>
+            <form id="uploadForm" hx-post="/api/upload" hx-target="#result" hx-swap="innerHTML" enctype="multipart/form-data">
+                <div class="flex gap-4 mb-6">
+                    <div class="flex-1">
+                        <label for="textInput" class="block text-white/80 mb-2">Enter Text:</label>
+                        <input type="text" id="textInput" name="text" class="w-full p-3 rounded-lg border border-gray-300">
+                    </div>
+                    <div class="flex-1">
+                        <label for="fileInput" class="block text-white/80 mb-2">Choose File:</label>
+                        <input type="file" id="fileInput" name="file" class="w-full p-3 rounded-lg border border-gray-300">
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
+                        Upload
+                        </button>
+                </div>
+                </form>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button hx-get="/api/hello" hx-target="#content" hx-swap="innerHTML"
-                class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
-                Say Hello! 👋
-            </button>
-
-            <button hx-post="/api/update" hx-target="#content" hx-swap="innerHTML"
-                class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
-                Update Message! ✨
-            </button>
-        </div>
-
-        <div class="mt-8 text-center">
-            <p class="text-white/60 text-sm">
-                Powered by <span class="font-semibold">Ballerina</span> & <span class="font-semibold">HTMX</span>
-            </p>
+        <div id="result" class="mt-6 text-center text-white/80">
+            <!-- Uploaded content will appear here -->
         </div>
     </div>
 </body>
